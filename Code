@@ -1,1 +1,80 @@
+Example_Sentence = "Information technology is a tool that can be leveraged to make the world a safe place"
 
+nlp = spacy.load('en_core_web_sm')
+
+def spacy_process(text):
+    doc = nlp(text)
+    
+    #Tokenization and lemmatization are done with the spacy nlp pipeline commands
+
+
+    lemma_list = []
+    for token in doc:
+        lemma_list.append(token.lemma_)
+    print("Tokenize+Lemmatize:")
+    print(lemma_list)
+    
+    #Filtering the stopword
+
+    filtered_sentence =[] 
+    for word in lemma_list:
+        lexeme = nlp.vocab[word]
+        if lexeme.is_stop == False:
+            filtered_sentence.append(word) 
+    
+    #Removing punctuation
+
+
+    punctuations="?:!.,;"
+    for word in filtered_sentence:
+        if word in punctuations:
+            filtered_sentence.remove(word)
+    print(" ")
+    print("Remove stopword & punctuation: ")
+    print(filtered_sentence)
+
+import nltk
+from nltk.tokenize import word_tokenize  
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
+from nltk.stem.porter import *
+
+p_stemmer = PorterStemmer()
+#s_stemmer = SnowballStemmer(language='english')
+
+def nltk_process(text):
+    #Tokenization
+    nltk_tokenList = word_tokenize(text)
+    
+    #Stemming
+    nltk_stemedList = []
+    for word in nltk_tokenList:
+        nltk_stemedList.append(p_stemmer.stem(word))
+        #nltk_stemedList.append(s_stemmer.stem(word))
+    
+    #Lemmatization
+    wordnet_lemmatizer = WordNetLemmatizer()
+    nltk_lemmaList = []
+    for word in nltk_stemedList:
+        nltk_lemmaList.append(wordnet_lemmatizer.lemmatize(word))
+    
+    print("Stemming + Lemmatization")
+    print(nltk_lemmaList)
+
+    #Filter stopword
+    filtered_sentence = []  
+    nltk_stop_words = set(stopwords.words("english"))
+    for w in nltk_lemmaList:  
+        if w not in nltk_stop_words:  
+            filtered_sentence.append(w)  
+
+    #Removing Punctuation
+
+    punctuations="?:!.,;"
+    for word in filtered_sentence:
+        if word in punctuations:
+            filtered_sentence.remove(word)
+    print(" ")
+    print("Remove stopword & Punctuation")
+    print(filtered_sentence)
